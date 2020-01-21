@@ -1,0 +1,91 @@
+---
+title: "Managing Data"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+data()
+data(mtcars)
+mtcars
+str(mtcars)
+mtcars$cyl <- as.factor(mtcars$cyl)
+mtcars$wtlbs <- mtcars$wt * 2000
+str(mtcars)
+
+library(plyr)
+arrange(mtcars, cyl)
+# to include column names
+myCars <- cbind(vehicle=row.names(mtcars), mtcars)
+arrange(myCars, cyl, mpg) #sorts first by cyl then by mpg
+# sort with displacement in descending order
+arrange(myCars, cyl, desc(disp))
+```
+
+```{r}
+set.seed(2019)
+x = data.frame(grp = rep(c(1,2,3),each=8))
+x$weight = c(5+rnorm(8), 7.5 + rnorm(8), 2.5 + rnorm(8))
+
+plot(x) #Q1
+plot(x$weight~factor(x$grp)) #Q2
+#-----
+x$pest <- factor(rep(c("Y","N"),12))
+
+is.factor(x$pest) #Q1
+is.factor(x$grp) #Q2
+
+head(x$pest) #Q3
+
+head(x$grp) #Q4
+
+head(factor(x$grp)) #Q5
+
+#-------
+fit1 <- lm(weight~ (grp) + (pest), data = x)
+fit2 <- lm(weight~ factor(grp) + factor(pest), data = x)
+summary(fit1)
+summary(fit2)
+
+```
+
+```{r}
+#topic 6 
+
+library(MASS)
+head(mammals) #mammals is a data.frame object
+plot(x= mammals$body, y = mammals$brain, xlab = "body", ylab = "brain")
+plot(brain~body, data=mammals)
+
+plot(brain~body,data=mammals,log="xy")
+
+
+plot(brain~body,data=mammals,log="xy")
+lm_fit <-lm((log10(brain))~(log10(body)),data = mammals)
+abline(lm_fit,col="red",lty=2)
+
+mpgbywt <- lm(mpg~wt, data = mtcars)
+plot(mpgbywt)
+par(mfrow = c(2,2))
+plot(mpgbywt)
+# Plot window remains divided until reset session, or hit or use code like:
+par(mfrow = c(1,1))
+
+plot(mpg~wt, data= mtcars)
+# lm() function fits a linear least-squares model
+# Similarly, can add line fitted line to scatter to plot above
+abline(lm(mpg~wt, data= mtcars))
+plot(mtcars$mpg, mtcars$wt) #also creates scatter
+#plot, but note axes
+
+
+#Create sequence of values for x (aka vector)
+x<- seq(-3,3, length = 20)
+#Create values of y that are normally distributed
+function of x
+
+y<- dnorm(x)
+plot(x,y)
+#Look up help 
+```
+
