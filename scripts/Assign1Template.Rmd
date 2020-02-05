@@ -1,0 +1,74 @@
+---
+title: "Assign1Template"
+output: pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+
+This is a template for completing the first assignment.  It is not required that you use it, but hopefully helps with organziation and to see some of the functionality of R Markdown.  You'll need to tailor this file for your own use.  For example, the grader need not have this paragraph included.  
+
+#1.
+Use the data described in Problem 3.30 regarding lumber. From the files you downloaded above, you will find the data under CH03, named ex3-30.txt. Use the following commands to import and summarize the data.
+
+```{r, setup}
+#Use path name with R Markdown
+lumber <- read.csv("~/Documents/GitHub/CSU/stats_511/data/assignment_1/ASCII-comma/CH03/ex3-30.TXT", quote = "'")
+
+#View(lumber)  this doesn't work well with R Markdown
+str(lumber)
+```
+
+**A. Include the histogram in your assignment.**
+```{r}
+
+hist(lumber$Number, 
+     main = "Histogram of Lumber",
+     xlab = "Lumber",
+     ylab = "Frequency")
+
+
+```
+**B. Give the mean and median of the sample.**
+```{r}
+
+(mean(lumber$Number))
+# 7.728571
+
+median(lumber$Number)
+# 8 
+```
+**C. Does the data appear to be “normal” (bell-shaped)? Justify your response based on your histogram from above.**  
+
+Yes, I think the data could be considred normal due to the fact that there is only 1  majority of the observations fall in the 7-9 range, which matches the median and mean, with decreasing frequency moving away from the middle. 
+<br>
+
+#This is another style or example of submitting a question via R Markdown (a bit more compact) 
+
+#2 Survival Times
+
+```{r}
+survival <- read.csv("~/Dropbox/STAT511Fall2019/Assignments/OL_Data/CH03/ex3-7.TXT", quote = "'")
+str(survival)
+
+survival <- read.csv(file.choose(), quote = "'")
+View(survival)
+str(survival)
+mean(survival$StandardTherapy)
+sd(survival$StandardTherapy)
+boxplot(survival)
+
+A. What is the sample mean and sample standard deviation for each of the therapies?
+B. Construct side-by-side boxplots showing the survival times for each therapy.
+
+#A
+#Standard 
+
+#New
+
+#B
+
+```
+
+
+
+
