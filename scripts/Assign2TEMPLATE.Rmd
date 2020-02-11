@@ -1,0 +1,61 @@
+---
+title: "Assign2TEMPLATE"
+output:
+  pdf_document: default
+---
+
+### 1. Z ~ N(0,1)
+```{r}
+# A. P(Z ≤ 0.79)
+pnorm(0.79)
+
+# B. P(Z ≤ -0.23)
+pnorm()
+
+# C. P(Z > 1.42)
+# D. P(-0.23 ≤ Z ≤ 1.10)
+# E. Find the value z such that P(Z ≤ z) = 0.2843
+# F. Find the value z such that P(Z > z) = 0.3264
+
+
+```
+### 2. Y ~ N(5.2, 0.8)
+```{r}
+#A P(Y < 6)
+
+#B P(Y > 5) 
+
+#C P(4.8 < Y < 6.8)
+
+#D y such that P(Y < y) = 0.85                                    
+
+```
+### 3. Property of Y ~ skewed distn (mu=80, sd=5)
+A.  Give an interval with the property that at least 75% of the data will be in that interval.
+What rule did you use to determine the interval?
+
+B.  Describe the distribution of . Give the mean, standard deviation and shape of the
+distribution. (3 pts)
+
+
+### 4. Seeds: A random sample of n=25 seeds from a particular bean population is obtained. The weight of each seed is recorded. 
+```{r, fig.height= 3, fig.width= 4, fig.align='cnter'}
+Seeds<-read.csv("/Users/bensharp/Dropbox/STAT511Spring2020/Assignments/Assign2/Seeds.csv")
+str(Seeds)
+# A. Construct a histogram of the data. Also give the sample mean and sample standard deviation. (3 pts)
+ 
+
+# B. Give a 95% confidence interval for μ (population mean seed weight).
+
+```
+C. Interpret your confidence interval from part B.
+
+D. Do you think the CI is valid? In other words, are assumptions satisfied?
+ 
+
+#5 Describe how the following affect the width of the confidence interval (assuming everything else is held constant). Answer should be increase, decrease or stays the same.
+A. Sample size increases.
+B. Confidence level increases.
+C. Standard deviation increases.
+
+

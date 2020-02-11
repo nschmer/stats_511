@@ -57,8 +57,8 @@ mean(survival$StandardTherapy)
 sd(survival$StandardTherapy)
 boxplot(survival)
 
-A. What is the sample mean and sample standard deviation for each of the therapies?
-B. Construct side-by-side boxplots showing the survival times for each therapy.
+# A. What is the sample mean and sample standard deviation for each of the therapies?
+# B. Construct side-by-side boxplots showing the survival times for each therapy.
 
 #A
 #Standard 
