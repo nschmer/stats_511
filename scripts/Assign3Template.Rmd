@@ -1,0 +1,127 @@
+---
+title: "Assignment 3"
+author: "Natalie Schmer"
+output:
+  word_document: default
+  pdf_document: default
+editor_options:
+  chunk_output_type: console
+---
+
+## 1.
+
+```{r}
+{
+ybar = 5.3  #sample mean
+s=.5        #sample std dev
+n=10        #sample size
+alpha = .05 #alpha level
+}
+
+```
+
+### 1A
+SE and 95% ME
+```{r}
+#By hand 
+(SE <- s/sqrt(n))
+
+#95% ME
+(ME_95 <- qt(1- alpha/2, df=(n-1))*SE)
+```
+### 1B
+95% CI for population mean
+```{r}
+(CI <- c((ybar - ME_95), (ybar + ME_95)))
+```
+
+For questions C – E, suppose we are interested in testing H0: μ=5 vs HA: μ≠5 with α = 0.05.
+
+### 1C
+**Based on the 95% confidence interval of  (4.942322, 5.657678), we fail to reject null hypothesis that the true mean is 5 since 5 is in that CI.**
+
+### 1D
+```{r}
+#Test statistic
+(TS <- (ybar - 5)/ (s/sqrt(n)))
+
+#Rejection region
+(rr <- qt(1- alpha/2, df=(n-1)))
+```
+ 
+**Since our test statistic does not fall outside of our rejection region (instead, rejection region >TS) we fail to reject the null hypothesis that the true mean of this sample is 5.**
+
+### 1E
+```{r}
+#New n
+new_n <- 51
+
+#Test statistic
+(TS <- (ybar - 5)/ (s/sqrt(new_n)))
+
+#Rejection region
+(rr <- qt(1- alpha/2, df=(new_n-1)))
+
+#check
+BSDA::tsum.test(mean.x=ybar, s.x=s, n.x=n, mu=5)
+```
+
+**Now that our sample size has increased, our test statistic falls outside of our rejection region and we reject the null hypothesis that the true mean of the sample is 5**
+
+## 2.
+Manufacture of pills wanting to know about average of active ingredient.
+```{r}
+pills <- read.csv("/Users/natalieschmer/Desktop/Pills.csv")
+
+head(pills)
+pills
+str(pills)
+```
+### 2A.
+Histogram and qqplot with n = 24.
+```{r, fig.height= 3.5}
+
+hist(pills$y, main= "Pills", xlab= "Amount of Active Ingredient (mg)")
+qqnorm(pills$y)
+qqline(pills$y)
+
+(shapiro.test(pills$y))
+```
+
+**Based on the Shapiro-Wilk test, these data are normally distributed since the p-value 0.05 < **
+
+### 2B.
+```{r}
+t.test(pills$y)
+```
+**Mean estimate is 19.5 mg and 95% CI is (19.07609, 19.92391)**
+
+### 2C.
+H0 $\mu$ = 20  HA: $\mu \neq$ 20  
+
+**Null Hypothesis is that the true mean of the sample is 20 mg. The alternative hypothesis is that the true mean of the sample is not 20**
+```{r}
+pill_t <- t.test(pills$y, mu = 20)
+(pill_t$statistic)
+(pill_t$p.value)
+```
+
+**Since the p value is < 0.05, we fail to reject the alternaive hypothesis, and it is likely that the mean of the sample is NOT 20 mg**
+
+### 2D.
+H0 $\mu$ = 20  HA: $\mu$ < 20     Can also state H0: $\mu \geq$ 20
+
+**The null hypothesis is that the true mean of the saple is 20 mg, and the altenative hypothesis is that the true mean is less than 20 mg**
+```{r}
+(pill_t_2d <- t.test(pills$y, mu = 20, alternative = "less"))
+(pill_t_2d$statistic)
+(pill_t_2d$p.value)
+
+```
+
+**Since the p value is <0.05, we fail to reject the alternative hypothesis, and it is likely that the mean of the sample is less than 20 mg**
+
+### 2E.
+
+**The test in part D would have the higher power becuase that test is a one-sided test, testing effects in one direction, where the the rejection of the null hypothesis when the null hypothesis is false is important for the context of the question. In this case, it is important to accurately reject the null hypothesis based on p-values in both 2C and 2D because in 2C, we do not know weather or not the true mean is greater or less than 20, we just know it is not 20 so there is the possibility of it being less than 20, and in part d, we specify the alternative being less, so we know for a fact the mean is less than 20. Accurately interpreting the p values is important in decision making, especially in cases like this where there is a standard that will impact health.**
+

@@ -1,0 +1,266 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Assign1Template},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Assign1Template}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{}
+    \preauthor{}\postauthor{}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+\maketitle
+
+\#1. Use the data described in Problem 3.30 regarding lumber. From the
+files you downloaded above, you will find the data under CH03, named
+ex3-30.txt. Use the following commands to import and summarize the data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Use path name with R Markdown}
+\CommentTok{#Laptop}
+\CommentTok{# lumber <- read.csv("~/Documents/GitHub/CSU/stats_511/data/assignment_1/ASCII-comma/CH03/ex3-30.TXT", quote = "'")}
+
+\CommentTok{#office}
+\NormalTok{lumber <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"/Users/natalieschmer/Desktop/GitHub/stats_511/data/ASCII-comma/CH03/ex3-30.TXT"}\NormalTok{, }\DataTypeTok{quote =} \StringTok{"'"}\NormalTok{)}
+
+\CommentTok{#View(lumber)  this doesn't work well with R Markdown}
+\KeywordTok{str}\NormalTok{(lumber)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    70 obs. of  1 variable:
+##  $ Number: int  7 8 6 4 9 11 9 9 9 10 ...
+\end{verbatim}
+
+\textbf{A. Include the histogram in your assignment.}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{hist}\NormalTok{(lumber}\OperatorTok{$}\NormalTok{Number, }
+     \DataTypeTok{main =} \StringTok{"Histogram of Lumber"}\NormalTok{,}
+     \DataTypeTok{xlab =} \StringTok{"Lumber"}\NormalTok{,}
+     \DataTypeTok{ylab =} \StringTok{"Frequency"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Assign1Template_files/figure-latex/unnamed-chunk-1-1.pdf}
+\textbf{B. Give the mean and median of the sample.}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(}\KeywordTok{mean}\NormalTok{(lumber}\OperatorTok{$}\NormalTok{Number))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 7.728571
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{median}\NormalTok{(lumber}\OperatorTok{$}\NormalTok{Number)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 8
+\end{verbatim}
+
+\textbf{C. Does the data appear to be ``normal'' (bell-shaped)? Justify
+your response based on your histogram from above.}
+
+Yes, I think the data could be considred normal due to the fact that
+there is only 1 majority of the observations fall in the 7-9 range,
+which matches the median and mean, with decreasing frequency moving away
+from the middle.
+
+\#2 Survival Times
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#office}
+\NormalTok{survival <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"/Users/natalieschmer/Desktop/GitHub/stats_511/data/ASCII-comma/CH03/ex3-7.TXT"}\NormalTok{, }\DataTypeTok{quote =} \StringTok{"'"}\NormalTok{)}
+\KeywordTok{str}\NormalTok{(survival)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    28 obs. of  2 variables:
+##  $ StandardTherapy: int  4 14 29 6 15 2 6 13 24 16 ...
+##  $ NewTherapy     : int  5 17 27 9 20 15 14 18 29 19 ...
+\end{verbatim}
+
+\textbf{A. What is the sample mean and sample standard deviation for
+each of the therapies?}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Standard Therapy}
+\KeywordTok{mean}\NormalTok{(survival}\OperatorTok{$}\NormalTok{StandardTherapy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 15.67857
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sd}\NormalTok{(survival}\OperatorTok{$}\NormalTok{StandardTherapy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 9.630405
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#New therapy}
+\KeywordTok{mean}\NormalTok{(survival}\OperatorTok{$}\NormalTok{NewTherapy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 20.71429
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sd}\NormalTok{(survival}\OperatorTok{$}\NormalTok{NewTherapy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 9.808753
+\end{verbatim}
+
+\textbf{B. Construct side-by-side boxplots showing the survival times
+for each therapy.}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{boxplot}\NormalTok{(survival, }\DataTypeTok{xlab =} \StringTok{"Therapy type"}\NormalTok{, }\DataTypeTok{ylab=} \StringTok{"Survival Times"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Assign1Template_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+
+\end{document}

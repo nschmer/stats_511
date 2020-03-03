@@ -1,7 +1,11 @@
 ---
 title: "Assign2TEMPLATE"
+author: "Natalie Schmer"
 output:
+  word_document: default
   pdf_document: default
+editor_options:
+  chunk_output_type: console
 ---
 
 ### 1. Z ~ N(0,1)
@@ -9,53 +13,88 @@ output:
 # A. P(Z ≤ 0.79)
 pnorm(0.79)
 
-# B. P(Z ≤ -0.23)
-pnorm()
+# B. P(Z ≤ -0.23) 
+pnorm(-0.23)
 
 # C. P(Z > 1.42)
-# D. P(-0.23 ≤ Z ≤ 1.10)
-# E. Find the value z such that P(Z ≤ z) = 0.2843
-# F. Find the value z such that P(Z > z) = 0.3264
+1- pnorm(1.42)
 
+# D. P(-0.23 ≤ Z ≤ 1.10)
+# same as = P(Z<= 1.1) - P(Z<= -0.23)
+pnorm(1.1) - pnorm(-0.23)
+
+# E. Find the value z such that P(Z ≤ z) = 0.2843
+qnorm(0.2843)
+
+# F. Find the value z such that P(Z > z) = 0.3264
+qnorm(1-0.3264)
 
 ```
 ### 2. Y ~ N(5.2, 0.8)
 ```{r}
+{
+  mu <- 5.2
+  sigma <- 0.8
+}
+
 #A P(Y < 6)
+pnorm((6-mu)/sigma)
 
 #B P(Y > 5) 
+1-pnorm(((5-mu)/sigma))
 
 #C P(4.8 < Y < 6.8)
+pnorm((6.8-mu)/sigma) - pnorm((4.8-mu)/sigma)
 
-#D y such that P(Y < y) = 0.85                                    
+#D y such that P(Y < y) = 0.85 
+mu + (qnorm(0.85)*sigma)
 
 ```
-### 3. Property of Y ~ skewed distn (mu=80, sd=5)
+### 3. Property of Y ~ skewed distn (mu=80, sd=5). Random sample of n = 100 is drawn. 
+
 A.  Give an interval with the property that at least 75% of the data will be in that interval.
+
+**80 +/- 10, so (70, 90)**
+
 What rule did you use to determine the interval?
+**I used the part of Chebyshev's rule that says at least 75% of the data will lie within Y(bar) +/- 2s**
 
-B.  Describe the distribution of . Give the mean, standard deviation and shape of the
+B.  Describe the distribution of Y(bar) Give the mean, standard deviation and shape of the
 distribution. (3 pts)
-
+**As stated, the mean is 80, the standard deviation is 5, and the shape of the distribution is normal due to the Central Limit Theorem.** 
 
 ### 4. Seeds: A random sample of n=25 seeds from a particular bean population is obtained. The weight of each seed is recorded. 
 ```{r, fig.height= 3, fig.width= 4, fig.align='cnter'}
-Seeds<-read.csv("/Users/bensharp/Dropbox/STAT511Spring2020/Assignments/Assign2/Seeds.csv")
-str(Seeds)
+seeds<-read.csv("~/Desktop/Seeds.csv")
+str(seeds)
 # A. Construct a histogram of the data. Also give the sample mean and sample standard deviation. (3 pts)
- 
+hist(seeds$Weight, 
+     col="grey", 
+     main="Histogram of Seeds", 
+     xlab="Seed Weight")
+
+mean(seeds$Weight)
+
+sd(seeds$Weight)
 
 # B. Give a 95% confidence interval for μ (population mean seed weight).
+t.test(seeds$Weight, 
+       mu= mean(seeds$Weight), 
+       conf.level = .95)
 
 ```
 C. Interpret your confidence interval from part B.
+**There is a 95% chance that the mean value will fall between [479.1754, 573.0646]**
 
 D. Do you think the CI is valid? In other words, are assumptions satisfied?
- 
+**I think the CI is valiid. Even though the histogram looks slightly skewed to the left, the distribution given by the t-test is still generally right even if the data are not completely normal.**
 
 #5 Describe how the following affect the width of the confidence interval (assuming everything else is held constant). Answer should be increase, decrease or stays the same.
-A. Sample size increases.
+A. Sample size increases. 
+**CI width decreases**
 B. Confidence level increases.
+**CI width increases**
 C. Standard deviation increases.
+**CI width increases**
 
 

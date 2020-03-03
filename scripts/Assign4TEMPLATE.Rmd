@@ -1,0 +1,224 @@
+---
+title: "Assign 4"
+author: "Natalie Schmer"
+output:
+  word_document: default
+  pdf_document: default
+editor_options:
+  chunk_output_type: console
+---
+```{r, include=FALSE}
+library(boot)
+library(tidyverse)
+library(BSDA)
+```
+
+
+## 1.
+### 1A
+**The null hypothesis is that the mean process time is 15 minutes, and the alternative hypothesis is that the mean process time is less than 15 minutes**
+
+### 1B
+```{r}
+{
+  n <- 30
+  test.stat <- -1.81
+  side2_p <- 0.08 
+}
+
+pnorm(test.stat, lower.tail = T)
+```
+
+## 2.  
+### 2A 
+Find power for n = 20.
+```{r}
+{
+  sd <-  2
+  true_mean <- 16 #hyp= 15
+  n <- 20 
+}
+
+power.t.test(n = n, 
+             delta = 1, 
+             sd = sd, 
+             sig.level = 0.05, 
+             type = "one.sample", 
+             alternative = "one.sided")
+```
+**The power is 0.6951493**
+
+### 2B Larger Conjecture for std dev 
+```{r}
+power.t.test(n = n, 
+             delta = 1, 
+             sd = 3, 
+             sig.level = 0.05, 
+             type = "one.sample", 
+             alternative = "one.sided")
+```
+**Lower power with higher sd**
+
+
+### 2C Larger Sample.
+```{r}
+power.t.test(n = 30, 
+             delta = 1, 
+             sd = sd, 
+             sig.level = 0.05, 
+             type = "one.sample", 
+             alternative = "one.sided")
+```
+**Higher power with larger sample size**
+
+### 2D Smaller Alpha.
+```{r}
+power.t.test(n = n, 
+             delta = 1, 
+             sd = sd, 
+             sig.level = 0.01, 
+             type = "one.sample", 
+             alternative = "one.sided")
+```
+**Lower power with higher alpha**
+
+### 2E Larger Delta Conjecture. 
+```{r}
+#If conjectured mean was 17, delta would be 2 
+power.t.test(n = n, 
+             delta = 2, 
+             sd = sd, 
+             sig.level = 0.05, 
+             type = "one.sample", 
+             alternative = "one.sided")
+```
+**Higher power with larger delta**
+
+### 2F Find n for power = .90.
+```{r, message=FALSE}
+
+power.t.test(power = 0.9, 
+             sd= sd,
+             delta = 1,
+             alternative = "one.sided",
+             type = "one.sample")
+```
+**n = 35.65268 which rounds to 36**
+
+## 3. 
+### Use the data from Problem 5.29 which deals with lead concentrations in estuarine creeks.
+```{r}
+PB <- read.csv("/Users/natalieschmer/Desktop/GitHub/stats_511/data/ASCII-comma/CH05/ex5-29.TXT", quote ="'")
+```
+
+### 3A  
+```{r, fig.height=3.5}
+
+hist(PB$Lead, main= "Lead", xlab= "Lead concentration in estuarine creeks")
+qqnorm(PB$Lead)
+qqline(PB$Lead)
+
+(shapiro.test(PB$Lead))
+```
+**The SW test of normality gives a p-value much less than 0.5, so the data is not normal. This is backed up by the histogram, which is heavilty skewed to the left, and the qq plot/ qq line which is not close to straight**
+
+
+### 3B
+```{r}
+summary(PB$Lead)
+```
+**Mean is 37.24, median is 32.00**
+
+### 3C
+```{r, message=FALSE}
+BSDA::SIGN.test(PB$Lead, md = 30)$p.value
+```
+**P-value is greater than 0.05, so we fail to reject the null hypothesis**
+
+### 3D 
+```{r}
+BSDA::SIGN.test(PB$Lead, md = 30)
+```
+**Upper Achieved CI (17.0000 , 41)**
+
+### 3E
+```{r}
+t.test(PB$Lead)
+```
+**Standard 95% CI (24.86550, 49.62099)**
+
+### 3F
+```{r}
+#Define the function
+mean.fun <- function (d, i)
+{ m <- mean(d[i])
+  n <- length(i)
+  v <- (n-1)*var(d[i])/n^2
+  c(m, v)
+}
+
+set.seed(3700)
+results2 <- boot::boot(data = PB$Lead, mean.fun, R = 1000)
+boot::boot.ci(results2, type = "all")
+```
+**Studentized 95% CI: (28.03, 56.33)**
+
+###3G  
+**For a cumulative assessment, the mean would work the best**
+
+## 4.
+```{r}
+Jets <- read.csv("/Users/natalieschmer/Desktop/GitHub/stats_511/data/ASCII-comma/CH06/ex6-43.TXT", quote = " ' ")
+```
+
+### 4A
+```{r, fig.height=3, fig.width=4}
+#Boxplot for when data are in 2 columns
+boxplot(Jets)
+```  
+
+### 4B
+```{r}
+mean(Jets$NarrowBodied, na.rm = TRUE)
+sd(Jets$NarrowBodied, na.rm = TRUE)
+
+mean(Jets$WideBodied)
+sd(Jets$WideBodied)
+
+```
+
+### 4C
+```{r}
+#reshape data 
+jets_long <- Jets %>%
+                pivot_longer(cols= c("WideBodied",   "NarrowBodied"),
+                            names_to = "jets",
+                             values_to = "body",
+                             values_drop_na = F)
+
+(jets_t <- t.test(body ~ jets, 
+       data = jets_long,
+       var.equal = T))
+
+(jets_t$conf.int) 
+```
+**Based on the CI, we can conclude there is a difference on populations because 0 is not in the CI**
+
+### 4D
+```{r}
+(sd(Jets$NarrowBodied, na.rm = TRUE)/sd(Jets$WideBodied))
+```
+
+**Based on part B, (recalculated in 4D), we can use a pooled variance t-test because smax/smin < 2**
+
+### 4E
+```{r}
+(jets_t_4e <- t.test(body ~ jets, 
+       data = jets_long,
+       var.equal = T, 
+       mu = 0,
+       alternative = "two.sided"))
+
+jets_t_4e$p.value
+```
+**Since the p-value is < 0.05, we can reject the null hypothesis that the noise level is the same bewteen the two groups**
