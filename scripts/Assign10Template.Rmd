@@ -1,0 +1,161 @@
+---
+title: "Assignment 10"
+author: "Natalie Schmer"
+output:
+  word_document: default
+  pdf_document: default
+editor_options:
+  chunk_output_type: console
+---
+```{r, include=FALSE}
+library(tidyverse)
+```
+
+## 1. Vaccine for tuberculosis
+```{r, message=FALSE}
+TB <-array(c( 619, 2537, 10, 8,
+		    87892, 87886, 499, 505,
+		    7232, 7470, 45, 29),
+		dim=c(2,2,3),
+	 	dimnames=list( Trt=c("Ctrl","Trt"),
+					Response=c("TBneg","TBpos"),
+					Study=c("1","2","3")))
+
+#A Odds Ratios by Study
+
+#by hand (will be shown in solutions)
+
+#Study 1 
+{
+  ctrl_1 <- (10/629)/(1-(10/629))
+  trt_1 <- (8/2545)/(1-(8/2545))
+}
+
+ctrl_1/trt_1
+
+#Study 2
+{
+  ctrl_2 <- (499/88391)/(1-(499/88391))
+  trt_2 <- (505/88931)/(1-(505/88931))
+}
+
+ctrl_2/trt_2
+
+#Study 3 
+{
+  ctrl_3 <- (45/7277)/(1-(45/7277))
+  trt_3 <- (29/7499)/(1-(29/7499))
+}
+
+ctrl_3/trt_3
+
+
+#B Breslow Day Test
+library(metafor)
+tb_bd <- metafor::rma.mh(ai = TB[1,1,],
+                         bi = TB[1,2,],
+                         ci = TB[2,1,],
+                         di = TB[2,2,])
+
+tb_bd$BD
+tb_bd$BDp
+```
+
+**The p-value from this test is p = 0.0001456754, so much less than 0.05, and we colnclude that the odds ratios are not equal across the three studies and that the information across studies should not be combined.**
+
+
+### 2. Mock Final Exam Question with Lab grades/attendence
+```{r, message=FALSE}
+LabGrades <- read.csv("/Users/natalieschmer/Desktop/GitHub/stats_511/data/LabGrades.csv" 
+, header = TRUE)
+
+str(LabGrades)
+```
+
+### 2A. Days Absent by Gender
+```{r}
+maleAbsent <- subset(LabGrades$DaysAbsent, LabGrades$Gender == "M")
+
+femaleAbsent <- subset(LabGrades$DaysAbsent, LabGrades$Gender == "F")
+```
+
+** 2Ai. Diagnostics  **
+```{r, fig.height = 4.5}
+par(mfrow = c(2,2))
+qqnorm(maleAbsent, main = "Male Absent")
+qqline(maleAbsent)
+qqnorm(femaleAbsent, main = "Female Absent")
+qqline(femaleAbsent)
+hist(maleAbsent)
+hist(femaleAbsent)
+
+shapiro.test(maleAbsent)
+shapiro.test(femaleAbsent)
+
+```
+**Based on the qqplots and histograms, the data appears somewhat normal-- the data roughly falls along the qqline, but the histograms look to be slighly non-normal, specifically on the outer ranges. The shapiro wilk test confirms that the male absent data is normal, but female absent is not normal, although it is very close.**
+  
+** 2Aii 2-Sample t-test  **
+```{r, echo=FALSE}
+t.test(maleAbsent, femaleAbsent, variance = "equal")
+
+```
+**Hypotheses**: 
+H0: $\mu_M$ = $\mu_F$ vs HA: $\mu_M$ =/= $\mu_F$
+
+**The p-value is p =0.0144, indicating that mean absences between male and female student are not equal to eachother. So, we reject the null hypothesis and conclude that one of the groups of students have more absent days than the other, which appears to be males.** 
+
+### 2B. Differences in Exam1 and Exam2
+```{r}
+LabGrades$TestDiff <- LabGrades$Test2 - LabGrades$Test1
+# Bi.
+shapiro.test(LabGrades$TestDiff)
+#p = 0.267, data is normal
+
+# Bii.
+t.test(LabGrades$TestDiff, alternative = "greater")
+#p-value = 0.001396
+```
+**p < 0.05, indicting that the  the average difference for Exam 2 vs Exam 1 is more than 0.**
+
+
+### 2Ci Summary Table
+```{r}
+LabGrades %>% 
+                filter(Gender == "F" & Major == "Engineering") %>% 
+          count()
+{
+  table_c2 <- matrix(c(12, 4, 4, 9), nrow = 2, byrow = T)
+  colnames(table_c2) <- c("Engineering", "Not Engineering")
+  rownames(table_c2) <- c("Male", "Female")
+} 
+
+table_c2
+
+```
+
+### 2Cii
+```{r}
+chi_table_c2 <- chisq.test(table_c2)
+
+chi_table_c2$expected
+```
+
+### 2ciii
+```{r}
+chi_table_c2$p.value
+
+#p = 0.04480381
+```
+**Since p < 0.05, we can conclude there is an association between gender and being an engineering major.**
+
+### 2D.
+```{r, out.height= "150px"}
+ggplot(data= LabGrades, aes(x = DaysAbsent, y =Test2 ))+
+geom_point()+
+  geom_smooth(method = "lm", se = F) +
+  labs(x = "Days Absent",
+       y = "Test 2 Score") +
+  theme_classic()
+```
+**Based on the linear regression line, there is not a significant linear relationship between attendance and exam score, becuase even with fewer days absent, there seems to be a wider range of test scores and does not establish a clear relationship.**

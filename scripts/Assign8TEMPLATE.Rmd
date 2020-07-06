@@ -1,0 +1,170 @@
+---
+title: "Assignment 8"
+author: "Natalie Schmer"
+output:
+  word_document: default
+  pdf_document: default
+editor_options:
+  chunk_output_type: console
+---
+40 points total, 2 points per problem part unless otherwise noted.
+
+## Q1 Contrasts
+```{r, message = FALSE}
+{
+  library(tidyverse)
+  library(emmeans)
+}
+
+InData <- read.csv("/Users/natalieschmer/Desktop/GitHub/stats_511/data/WeightLoss.csv")
+
+WtLoss <- InData %>%
+          gather(key = "Trt", value = "Loss") %>%
+          mutate(Trt = as_factor(Trt)) %>%
+          mutate(Trt = fct_relevel(Trt, "S"))
+
+str(WtLoss)
+
+#Summary stats 
+SumStats <- WtLoss %>% 
+            group_by(Trt) %>% 
+            summarise(n = n(),
+                      mean = mean(Loss),
+                      sd = sd(Loss),
+                      se = sd/sqrt(n))
+
+SumStats
+```
+Use the following additional information about the Trts (called agents in the book):
+S = Standard
+A1 = Drug therapy with exercise and with counseling
+A2 = Drug therapy with exercise but no counseling
+A3 = Drug therapy no exercise but with counseling
+A4 = Drug therapy no exercise and no counseling
+
+```{r}
+a_1_fit <- lm(Loss ~ Trt, data = WtLoss) 
+anova(a_1_fit)
+
+a_1_emmout <- emmeans(a_1_fit, "Trt")
+a_1_emmout
+```
+
+A.	Compare the standard agent mean versus the average of means for the four other agents.
+```{r}
+contrast(a_1_emmout, list(
+  SvA = c(1, -0.25, -0.25, -0.25, -0.25))
+)
+```
+**The standard agent mean is the lowest as comapred to the average of means for the four other agents **
+
+B.	Compare the mean for the agents with exercise against those without exercise. (Ignore the standard.)
+```{r}
+#Exercise: A1 and A2, no exercise: A3, A4
+contrast(a_1_emmout, list(
+  A1_2vA3_4 = c(0, 0.5, 0.5, -0.5, -0.5))
+)
+```
+
+C.	Compare the mean for the agents with counseling against those without counseling. (Ignore the standard.)
+```{r}
+#Counseling: A1 and A2, no counseling: A3, A4
+contrast(a_1_emmout, list(
+  A1_3vA2_4 = c(0, 0.5, -0.5, 0.5, -0.5))
+)
+```
+
+D.	Compare the mean for the agents with counseling versus the standard.
+```{r}
+#Counseling: A1 and A2, 
+contrast(a_1_emmout, list(
+  SvsA1_3 = c(1, -0.5, 0, -0.5, 0))
+)
+```
+
+## Q2 Binomial Distribution
+```{r options(digits = 3)}
+{
+  n2 <- 22
+  pi2 <- 0.7
+}
+
+#A:	Mean and standard deviation of Y.
+meanY <- n2*pi2
+sdY <- sqrt(n2*pi2*(1-pi2))
+
+#B.	P(Y ≤ 15) 
+pbinom(15, size = 22, prob = 0.7)
+
+# C.	P(Y < 15) 
+pbinom(14, size = 22, prob = 0.7)
+
+# D.	P(Y = 15)
+dbinom(15, size = 22, prob = 0.7)
+
+
+# E.	P(15 ≤ Y < 18)
+pbinom(17, size = 22, prob = 0.7)- pbinom(15, size = 22, prob = 0.7)
+
+# F.	P(Y ≥ 18)
+1 - pbinom(17, size = 22, prob = 0.7)
+
+# G.	The normal approximation to P(Y ≥ 18) without continuity correction.
+(18- meanY)/sqrt(22*.7*.3)
+1 - pnorm(1.21)
+
+# H.	The normal approximation to P(Y ≥ 18) with continuity correction.
+(17.5- meanY)/sqrt(22*.7*.3)
+1 - pnorm(0.9770)
+```
+
+
+## Q3 Chronic Pain
+A.	Give an estimate for the proportion of persons suffering from chronic pain that are over 50 years of age.
+```{r}
+prop <- 424/800
+```
+
+B.	Give a 95% confidence interval on the proportion of persons suffering from chronic pain that are over 50 years of age.
+```{r}
+lower <- prop- 1.96*sqrt(((0.53)*(1-0.53))/800)
+upper <- prop + 1.96*sqrt(((0.53)*(1-0.53))/800)
+print(c(lower, upper))
+```
+
+C. Using the data in the survey, is there substantial evidence (α = 0.05) that more than half of persons suffering from chronic pain are over 50 years of age? Give the Z statistic, p-value and conclusion **(4 pts)** 
+H0: $\pi \le$ 0.5 vs HA: $\pi$ > 0.5  
+Test Statistic:  
+```{r}
+Z <- (0.53 - 0.5)/sqrt((0.5*(1-0.5))/800)
+Zalpha <- 1.645 
+pvalue <- 1-pnorm(Zalpha)
+```
+**Since Z > Zalpha and p = 0.049 which is very close to 0.05, we fail to reject the null hypothesis and conclude that there is substantial evidence that more than half the persons suffering from chronic pain are over 50.**
+
+## Q4 Defective Items
+A.	Give an estimate for the proportion of defective items.  
+```{r}
+prop4 <- 4/50
+```
+
+B.	Using R, calculate a 90% confidence interval for the true proportion of defective items using the normal approximation.  NOTES: (1) Use correct = TRUE (default). (2) The R CI will not match a hand calculation for this problem because R uses a different formula.
+```{r}
+prop.test(4, 50, p = 0.01, alternative = "greater", conf.level = 0.9, correct = F)
+```
+
+C. Using R, calculate a 90% confidence interval for the true proportion of defective items using the exact binomial method. Exact 90% CI: ()  
+```{r}
+binom.test(4, 50, p = 0.01, alternative = "greater", conf.level = 0.9)
+```
+
+D.	Is the sample size large enough for the normal approximation to be valid?  Justify your response using the criteria discussed in the notes (CH10 slide 19).
+```{r}
+nD <- 50
+piD <- 0.08
+
+3*sqrt(piD*(1-piD)/nD) #ok
+
+1-prop4 #not ok
+```
+**Since the second part of the sample size check was larger than pi hat, sample size is not large enough for the normal approximation to be valid**

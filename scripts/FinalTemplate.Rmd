@@ -1,0 +1,250 @@
+---
+title: "Final"
+author: "Natalie Schmer"
+output:
+  word_document: default
+  pdf_document: default
+editor_options:
+  chunk_output_type: console
+---
+Signature for honor pledge: Natalie Schmer 
+
+# 1. Survey of Graduates
+```{r setup 1, message = F, warning = FALSE}
+library(tidyverse)
+graduates <- read.csv("/Users/natalieschmer/Desktop/GitHub/stats_511/data/career.csv") 
+
+```
+
+### 1A. Summary of plot of Salar by Field
+```{r out.height="150px"}
+boxplot(Salary ~ Field, data= graduates)
+```
+
+*From this plot, I expect that health, out of all of the fields, health would be the one to be significanly different than the other fields. But, the boxplots all overlap a fair amount so I would not be surprised if there is not a significant difference.*
+
+###  1B. Anova p-value
+```{r}
+lm_salaries <- lm(Salary ~ Field, data= graduates)
+anova(lm_salaries)
+```
+*Since p > 0.05 at 0.19, we can conclude that variance among salaries are not significantly different between the different fields.*
+
+### 1C.  Contrast salary means for two particular fields. 
+*The two fields that seem to have a difference in salaries are health and wildlife ecology.*
+```{r}
+em_1 <- emmeans::emmeans(lm_salaries, "Field")
+emmeans::contrast(em_1, list(
+  a = c(0, 1, 0, 0, -1)
+))
+```
+*p < 0.05 at 0.027, and so it is evident that the salaries between health and wildlife ecology are significantly different.*
+
+### 1D. test for salaries by gender
+```{r}
+t.test(Salary ~ Gender, data = graduates)
+```
+*p > 0.05, so we can conclude there is not a significant difference in average salary by gender.*
+
+### 1E Degree by Gender
+```{r}
+graduates %>% 
+          select(Gender, Degree) %>% 
+          group_by(Gender, Degree) %>% 
+          summarise(n())
+
+gender_degree <-matrix(c(7, 30, 20, 10), byrow = TRUE, nrow = 2)
+colnames(gender_degree) <-c("Female", "Male")
+rownames(gender_degree) <-c("MS", "PhD")
+
+gender_degree
+
+chisq.test(gender_degree)
+```
+*p is <<< 0.05 at 0.0002, so we can conclude that there is a significant relationship between gender and degree level*
+
+### 1F. Field by Gender
+```{r}
+gender_field <- graduates %>% 
+          select(Gender, Field) %>% 
+          group_by(Gender, Field) %>% 
+          summarise(n()) %>% 
+          pivot_wider(names_from = "Gender",
+                      values_from = "n()") %>% 
+          as.matrix()
+
+gender_field <-matrix(c(4, 3, 3, 7, 6, 13, 5, 13, 9, 4), byrow = TRUE, nrow = 5)
+colnames(gender_field) <-c("Female", "Male")
+rownames(gender_field) <-c("AgSoil", "Ecol", "Engr", "Envi", "Health")
+
+gender_field
+
+chisq.test(gender_field)
+chisq.test(gender_field)$expected
+
+fisher.test(gender_field)
+```
+*Since the p > 0.05, we conclude that there is not a significant relationship between gender and field.*
+
+### 1G. Statistics coursework with salary...
+```{r}
+#Visualize 
+ggplot(data = graduates, aes(x= StatHours, y = Salary))+
+  geom_point()
+
+boxplot(Salary ~ StatHours, data = graduates)
+
+#anova because categorical
+graduates <- graduates %>% 
+                mutate(StatHours = as_factor(StatHours),
+                       StatHours = fct_relevel(StatHours, "0"))
+
+lm_stat_salaries <- lm(Salary ~ StatHours, data = graduates)
+summary(lm_stat_salaries)
+
+anova(lm_stat_salaries)
+```
+*I chose to do an anova for this question because upon visualizing the data, the predictor of stat hours seem to be a categoriacal variable rather than continuous, and an anova is more appropriate for categorical predictor data with continuous response, and salary is a continuous response.*
+
+### 1H.  What's up with this gender as only predictor for salary from question 1D?
+*Question D did not take into account the degree, which is important to consider because degree is a major infulence on salary. Additionally, each field pays differently which was not accounted for, and this also matters with degree because the salary for a given dgree in a given field may not be the same for that same degree in another field. This question could have had some sort of interaction or been a multiple regression for predicting salary while taking all variables into account.*
+
+```{r, include = F}
+### how survey data were initialy generated.
+set.seed(33)
+n <- seq(1,75,1)
+s <- rnorm(75,67,20)
+salary <- cbind(n,s)
+salary
+```
+
+# 2. Jaundice
+
+### 2A comparing proportions before and after.
+```{r}
+{
+#2011
+totalbirths_2011 <- 1098
+jaundice_2011 <- 192
+
+#2013
+totalbirths_2013 <- 1303
+jaundice_2013 <- 88
+}
+
+#2011 proportion 
+jaundice_2011/totalbirths_2011
+
+#2013 proportion 
+jaundice_2013/totalbirths_2013
+
+#2: Test
+prop.test(c(192, 88), c(1098, 1303), correct = T)
+```
+*SInce p < 0.05, there is a significant difference in the proportions of cases with jaundice between 2011 and 2013.*
+
+### 2B. 2011 Data only
+```{r}
+births2011 <- matrix(c(101, 228,
+                       50, 455,
+                       41, 223),
+                     byrow = T, nrow = 3)
+colnames(births2011) <- c("Jaundice", "Not Jaundice")
+rownames(births2011) <- c("Exclusive Breast Milk", "Mixed Feeding", "Exclusive Formula")
+
+births2011
+
+chisq.test(births2011)
+chisq.test(births2011)$expected
+```
+####1. 
+*Since p <<< 0.05, there is a significant association between feeding type and jaundice before the program was out in place.*
+
+####2.
+*Based from the expected vs actual counts, it appears that the exclusive breastmilk feeding deviates the most from all the types of feeding.*
+
+
+### 2C. Both before and after BF.
+```{r}
+before_after <- matrix(c(150, 1104,
+                       69, 618,
+                       61, 399),
+                     byrow = T, nrow = 3)
+colnames(before_after) <- c("Jaundice", "Not Jaundice")
+rownames(before_after) <- c("Exclusive Breast Milk", "Mixed Feeding", "Exclusive Formula")
+
+before_after
+
+#Odds ratio 
+{
+ebm <- 150/1104
+mf <- 69/618
+ef <- 61/399
+}
+
+epitools::oddsratio(before_after, method = "wald")$p.value
+```
+*Since p-values > 0.05, and 1 is included in the confidence intervals, we conclude that there is not a relationship between the bf program and jaundice.*
+
+####2. 
+*The results may not be consistant between the A, B, and C with the proportion test, chi-square test, and odds ratio becaue of things like table size and the number of comparisons, in that proportions can only compare 2 proportions but chi square tests and odds ratios can have more than 2 groups. Additionally, differences in sample sizes could play a role. This was seen with the Bird example, where sample sizes made it so the chi square test was not appropriate and gave a different p-value. For this example, two other variables that might help in this explaination include how long the mothers and children were allowed to spend together per day since 24 hours per day is ideal, and if pacifiers were used, since it is advised that they are not used.*
+
+# 3. Bike data
+
+```{r}
+bikedata <- read.csv("/Users/natalieschmer/Desktop/GitHub/stats_511/data/bikes.csv")
+head(bikedata)
+```
+
+### 3A. plot orginal data
+```{r, out.height= "180px"}
+ggplot(bikedata, aes(x = Temp, y = Bikes))+
+  geom_point()+
+  geom_smooth(method = "lm")
+```
+
+### 3B. Comments on diagnostics for original data
+```{r, include = FALSE}
+lm_3a <- lm(Bikes ~ Temp, bikedata)
+par(mfrow = c(1, 2))
+plot(lm_3a, which = c(2, 1))
+```
+*Concerns: There are many points on the residuals vs fitted plot that fall far from 0, and there are some points that are not falling along the 1:1 line (mostly on the extremes, bottom left and upper right) on the Q-Q plot, so this data may not be normal.*
+
+### 3C. Log Transform diagnostics comments (compared to orginal)
+```{r, include = FALSE}
+lm_3c <- lm(log(Bikes) ~Temp, bikedata)
+
+ggplot(bikedata, aes(x = Temp, y = log(Bikes)))+
+  geom_point()+
+  geom_smooth(method = "lm")
+
+par(mfrow = c(1, 2))
+plot(lm_3c, which = c(2, 1))
+```
+*Log-transforming the Bikes variable did not help the model in this case. The residuals were even farther from 0 and points were more so off of the 1:1 Q-Q plot line.*
+
+### 3D. Large residual values (raw, standardized, and rstudent values)
+```{r}
+#ID outlier, row 31
+#temp 42, 3143 bikes 
+
+#outlier test, Rstudent residual
+car::outlierTest(lm_3a)
+rstudent(lm_3a)[31]
+
+#Rstudentized residual
+rstandard(lm_3a)[31]
+
+#Raw residual
+resid(lm_3a)[31]
+lm_3a$residuals[31]
+```
+*The outlier here is row 31, with a temperature of 42 f, and 3143 bikes*
+
+### 3E  Temp and Bikes relationship observations.
+```{r}
+summary(lm_3a)
+```
+*Based on the model, it does appear that there is a clear and significant positive correlation between temperature and number of bikes on campus, in that more students bike to campus when it is warmer outside. The relationship is pretty strong, signified an R-squared of 0.82. *
+

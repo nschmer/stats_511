@@ -1,0 +1,95 @@
+---
+title: "Assign9"
+author: "Natalie Schmer"
+output:
+  word_document: default
+  pdf_document: default
+editor_options:
+  chunk_output_type: console
+---
+28 points total, 2 points per problem part unless otherwise noted.
+
+## Q1 Toxic Tomatoes
+
+```{r}
+#A 
+#New
+new_1a <- 5/50
+
+#Old
+old_1a <- 9/50
+
+#B 
+prop.test(c(5, 9), c(50, 50), correct = T)
+#X-squared = 0.74751, p-value = 0.3873
+
+#C
+#set up matrix
+tomatoes <- matrix(c(5, 45, 9, 41), byrow = T, nrow = 2)
+colnames(tomatoes) <- c("Toxic", "Non-toxic")
+rownames(tomatoes) <- c("New", "Old")
+tomatoes
+
+#test
+(tomato_test <- chisq.test(tomatoes, correct = T))
+#Z-squared = 0.748, p-value = 0.3873
+
+#D
+tomato_test$expected
+
+#E 
+fisher.test(tomatoes)
+#p-value = 0.3881
+```
+
+F. **Based on part D, fisher's test is preferred because the cell counts are very small as compared to the overall sample size.**
+```{r}
+#G
+prop.test(c(5, 9), c(50, 50), correct = T, alternative = "less")
+```
+
+## Q2 Anesthesia
+```{r}
+#A
+#DrugA
+a_2 <- 22/47
+
+#DrugB
+b_2 <- 13/47 
+
+#B (4 pts)
+#Since the sample sizes are small, fischer test 
+drugs <- matrix(c(4, 18, 9, 16), byrow=T, nrow =2)
+rownames(drugs) <- c("Drug A Yes", "Drug A No")
+colnames(drugs) <- c("Drug B Yes", "Drug B No")
+drugs
+
+fisher.test(drugs) 
+#odds ratio = 0.4029197, p-value= 0.2071
+```
+
+## Q3 Case Control Study
+3A.
+```{r}
+bird <- (98/199)/(1-(98/199))
+nobird <- (141/469)/(1-(141/469))
+odds_ratio <- bird/nobird
+```
+**The bird group has higher odds of getting lung cancer by about 2.25:1**
+
+3B. 
+```{r}
+birds <- matrix(c(328, 141, 101, 98), nrow = 2, byrow = T)
+colnames(birds) <- c("Healthy control", "Cancer patients")
+rownames(birds) <- c("No Bird", "Bird")
+birds
+
+epitools::oddsratio(birds, method = "wald")
+```
+**Based on the interval, it does appear that there is a relationship between bird ownership and lung cancer, where bird owners are more likely to have lung cancer. These estimates are significantly different than 1, since 1 is not in the CI.**
+
+3C. 
+```{r}
+(bird_test <- chisq.test(birds, correct = T))
+```
+**Since the p value is much less than 0.05, we reject the null hypothesis that the proportion of lung cancer patients is the same between bird owners and those that didn't own birds, and conclude that there is a greater rate of lung cancer with bird owners.**

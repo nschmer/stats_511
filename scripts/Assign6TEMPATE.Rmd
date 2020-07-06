@@ -1,0 +1,173 @@
+---
+title: "Assignment 6"
+author: "Natalie Schmer"
+output:
+  word_document: default
+  pdf_document: default
+editor_options:
+  chunk_output_type: console
+---
+
+## 1 Ratliver Variance Tests
+```{r}
+library(car)
+library(tidyverse)
+
+RatLiver <-read.csv("/Users/natalieschmer/Desktop/GitHub/stats_511/data/RatLiver.csv")
+str(RatLiver)
+```
+
+### 1A.Construct side-by-side boxplots of the data.
+```{r, out.height="180px"}
+boxplot(Enzyme ~ Trt, data = RatLiver)
+```
+
+### 1B. Use the F-test to test for equality of variances. Give the null hypothesis, test statistic, p-value and conclusion. (4 pts)
+F test for $H_0:\sigma_{ctrl}/\sigma_{LowChr} = 1 \  vs\   HA: \sigma_{ctrl}/\sigma_{LowChr} \neq 1$
+```{r}
+var.test(Enzyme ~ Trt, data = RatLiver) 
+
+#Or find by Hand
+#break up data into two vectors then make calculations
+Ctrl <- subset(RatLiver, Trt=="Ctrl")
+LowChr <- subset(RatLiver, Trt=="LowChr")
+```
+
+**The null hypothesis is that the true ratio of variances in enzymes relative to treatment is equal to 1. The F- statistic is 0.78, and the p = 0.73, and since F > p-value, we reject the null hypothesis that the true ratio of variances is equal to 1.**
+
+### 1C. Use Levene’s test (with center=”median”) to test for equality of variances. Give the p-value and conclusion. 
+```{r}
+car::leveneTest(Enzyme ~ Trt, data = RatLiver)
+```
+**The p-value = 0.67, which is still less than the F value, so still reject the null hypothesis**
+
+### 1D.  Based on your conclusions from parts B and C, would the pooled variance t-test or Welch-Satterthwaite t-test be preferred?
+**The Welch-Satterthwaite t-test would be preferred because the variances are not equal.**
+
+### 1E.  Regardless of your answer to part D, run a 2sided two-sample t-test assuming equal variances. Give the null hypothesis, test statistic, p-value and conclusion. (4 pts)
+$H_0: \mu_1=\mu_2$
+```{r}
+
+t.test(Enzyme ~ Trt, data = RatLiver)
+```
+**The null hypothesis is that the true means of each treatment type are the same. The test statisitc is t = 2.2157, and p-value = 0.03798, and since p < 0.05, we reject the null hypothesis.**
+
+
+### 1F Rerun the analysis as a one-way ANOVA. Give the ANOVA table in your assignment. Compare your results to part E and notice that the p-value is the same and F = t2.
+```{r}
+Fit = lm(Enzyme ~ Trt, data = RatLiver)
+(Ftest = anova(Fit))
+Ftest$statistic^2
+Ftest$`F value`
+Ftest$`Pr(>F)`
+```
+
+## 2. Meningitis  
+
+### 2A. State the four assumptions for conducting a one-way analysis of variance to compare the population mean antigen concentrations for infants with late onset sepsis, infants with late onset meningitis, and asymptomatic infants. (4 pts)
+
+**The assumptions are that this is a random sample, there are independent observations, there are normally distributed residuals, and there is the equality of variances**
+
+### 2B Conduct a one-way analysis of variance test to determine if at least one of the infant groups has a different average antigen concentration from the others.  Use a significance level of 0.05. 
+
+###i. State the hypotheses.  Define the parameters. 
+**The null hypothesis is that the mean antigen concentrations for infants with late onset sepsis, infants with late onset meningitis, and asymptomatic infants are equal, and the alternative is that they are not equal in that there is one or more difference. Rejection of H0 would be if F > F(alpha, df1, df2) **
+
+### 2B ii Provide the missing components of the ANOVA table.  Use R or calculator to plug appropriate summary statistics into equations from Slide 6 & Slide 8. Hint: (y_(..) ) ̅ is weighted average of group y ̅’s. (1 point for each SS’s, dfs, and MS’s, 6 pts total), 
+
+```{r}
+overall_mean <- (1.5 + 1.67 +1.14)/3
+  
+#Between
+##SStrt
+{
+  group1t <- 19*(1.5 - overall_mean)^2
+  group2t <- 22*(1.67 - overall_mean)^2
+  group3t <- 18*(1.14- overall_mean)^2
+} 
+
+SStrt <- sum(group1t, group2t, group3t)
+
+#df = t-1
+(dftrt <- 3-1)
+
+#MS 
+(MStrt <- SStrt / dftrt)
+
+#Within 
+##SS residual
+{
+  group1r <- (19 - 1)*0.12
+  group2r <- (22 - 1)*0.18
+  group3r <- (18 - 1)*0.04
+} 
+
+SSres <- sum(group1r, group2r, group3r)
+
+#df = nt - t
+(dfres <- ((19 + 22 + 18) - 3))
+
+#MS
+(MSres <- SSres / dfres)
+```
+
+
+
+### 2B iii Verify that your ratio of (s_B^2)/(s_W^2 ) from values in the MS column above is relatively close to the F test statistic.  Then provide a p-value from R for F = 12.02. (recall this is a “non-directional” alternative, p-value is area of F distribution to right of test static with appropriate degrees of freedom. Use the pf() function with correct df’s)
+```{r}
+(ratio <- MStrt / MSres) #very close to F statistic, 12.08 > 12.02 
+
+fcrit <- qf(0.95, 2, 56)
+pf(fcrit, 2, 56, 12.02)
+```
+
+
+### 2B iv Is it appropriate to conduct a follow-up analysis to determine which mean(s) significantly differ from the others?  Explain in a single sentence.
+
+**It would not be appropriate since our calculated F is very very close to the given F**
+
+## 3. Corn Yield
+
+```{r, message=FALSE}
+library(car)
+library(dplyr)
+library(emmeans)
+Corn <- read.csv("/Users/natalieschmer/Desktop/GitHub/stats_511/data/CornYield.csv")
+str(Corn)
+```
+
+### 3A.Provide a boxplot of the corn yields by the four treatment levels.  Also, provide summary statistics (sample size, mean, spread, SE) for each treatment level.  There is the summarise() function from the dplyr package from the example or there are certainly many other functions and packages that can do this. 
+```{r, out.height="180px"}
+boxplot(Yield ~ Variety, data = Corn)
+
+Corn %>% 
+  group_by(Variety) %>% 
+  summarise(n = n(),
+            mean = mean(Yield),
+            sd = sd(Yield),
+            se = sd / sqrt(n))
+
+```
+
+
+### 3B. Looking at the plot and summary statistics, do you expect any problems with the assumptions for performing an ANOVA?  If assumptions are met, do you expect a “large” F-statistic (and a “small” p-value) when performing an ANOVA?  (For these questions, there is no need to justify responses to both. The intent is to serve as a reminder to simply look at the summary stats and plots and think about expected outcomes.) 
+**Some boxplots have overlap but some do not, so there may be issues**
+
+### 3C. Carry out a one-way ANOVA to determine whether there is a significant difference (using α=0.05) in the mean yield for the different varieties. State the null hypothesis, give the F test statistic, p-value and conclusion. (4 pts)
+
+```{r}
+
+corn = lm(Yield ~ Variety, data = Corn)
+(Ftest = anova(corn))
+
+```
+**The null hypothesis is that the mean yields for each variety is equal. The F = 11.047 and p =  5.85e-05. Since F >> p, we reject the null hypothesis**
+
+
+### 3D. Run (unadjusted) pairwise comparisons of means. State the pairs that appear to be significantly different.  Hint: The p-values for comparing group means should be consistent with expectations from examining the box plot from part (A)
+```{r}
+(corn_3d <- emmeans::emmeans(corn, pairwise ~ Variety, adjust = "none"))
+corn_3d
+```
+
+**The pairs that seem to be significantly different are A and B (p = 0.0061), A and C (p = 0.0002), B and D (p = 0.0010), and C and D (<.0001). This is also consistent with the boxplots, in that there is little overlap between plots.**

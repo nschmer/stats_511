@@ -1,0 +1,163 @@
+---
+title: "Assign7"
+author: "Natalie Schmer"
+output:
+  word_document: default
+  pdf_document: default
+editor_options:
+  chunk_output_type: console
+---
+36 points total, 2 points per problem part unless otherwise noted.
+
+## Q1 Power Plants
+```{r message = FALSE}
+library(tidyverse)
+
+InData <- read.csv("/Users/natalieschmer/Desktop/GitHub/stats_511/data/ASCII-comma/CH08/ex8-23.TXT", quote = "'")
+str(InData)
+```
+
+### 1A.  Boxplots 
+```{r fig.width = 5, fig.height = 4}
+boxplot(Reliability ~ Plant, data = InData)
+```
+
+### 1B. ANOVA (Original Scale)
+```{r}
+Fit_1b = lm(Reliability ~ Plant, data = InData)
+(Ftest_1b = anova(Fit_1b))
+
+#ANOVA Table values
+Ftest_1b$`Sum Sq`
+Ftest_1b$`Mean Sq`
+Ftest_1b$Df
+Ftest_1b$`F value`
+Ftest_1b$`Pr(>F)`
+```
+
+### 1C. (**4pts**) Diagnostics (Original Scale)  
+```{r, message = FALSE}
+#Set up plot space and plot
+par(mfrow= c(2, 2))
+plot(Fit_1b)
+
+#Levene's test
+car::leveneTest(Reliability ~ Plant, data = InData, )
+
+#Shapiro - Wilk
+(shapiro.test(InData$Reliability))
+```
+**The conditions for a one way anova are: a random sample, there are independent observations, there are normally distributed residuals, and there is the equality of variances. Based on the above tests, it is evident that this data is not normal, since the SW test of normality gives a p-value much less than 0.5, the F- statistic is 2.67, and the p = 0.03, and since F > p-value the null hypothesisis rejected that the ratio of variances are equal, and the plots, specifically the Q-Q plot, show non-normal data.**
+
+### 1D. ANOVA (Square Root Transform)
+```{r}
+#square root transform EDG 
+InData$srt_trans <- sqrt(InData$Reliability)
+
+Fit_1d = lm(srt_trans ~ Plant, data = InData)
+(Ftest_1d = anova(Fit_1d))
+
+#ANOVA Table values
+Ftest_1d$`Sum Sq`
+Ftest_1d$`Mean Sq`
+Ftest_1d$Df
+Ftest_1d$`F value`
+Ftest_1d$`Pr(>F)`
+```
+
+### 1E. (**4pts**) Diagnostics (Square Root Transform)  
+```{r}
+#Set up plot space and plot
+par(mfrow= c(2, 2))
+plot(Fit_1d)
+
+#Levene's test
+car::leveneTest(srt_trans ~ Plant, data = InData, )
+
+#Shapiro - Wilk
+(shapiro.test(InData$srt_trans))
+```
+**Even with doing a square root transform, the data still does not appear to satisfy the requirements for a one way anova. The Q-Q plot looks better, and the residuals vs fitted closer to horizontal, but the shapiro p value is still much less than 0.05 and F > p.**
+
+### 1F. Kruskal-Wallis   
+```{r}
+kruskal.test(Reliability ~ Plant, data = InData)
+```
+**p = 0.051, since the p-value is technically greater than 0.05, we fail to reject the null hypothesis that the variance in reliability between the plants are significantly different from eachother, it appears the distributions are identical.**
+
+
+## Q2 Weight Loss
+```{r message = FALSE}
+library(tidyverse)
+
+weightloss <- read.csv("/Users/natalieschmer/Desktop/GitHub/stats_511/data/WeightLoss.csv")
+
+str(weightloss)
+
+WtLoss <- weightloss %>%
+          gather(key = "Trt", value = "Loss") %>%
+          mutate(Trt = as_factor(Trt)) %>%
+          mutate(Trt = fct_relevel(Trt, "S"))
+str(WtLoss)
+```
+
+### 2A.  (**4pts**) Summary Statistics
+```{r}
+WtLoss %>% 
+  group_by(Trt) %>% 
+  summarise(n = n(),
+            mean = mean(Loss),
+            sd = sd(Loss),
+            se = sd / sqrt(n))
+```
+
+### 2B.  ANOVA
+Note: Plots not required but will be shown ins solutions for convenience.
+```{r}
+Fit_2b = lm(Loss ~ Trt, data = WtLoss)
+(Ftest_2b = anova(Fit_2b))
+
+#ANOVA Table values
+Ftest_2b$`Sum Sq`
+Ftest_2b$`Mean Sq`
+Ftest_2b$Df
+Ftest_2b$`F value`
+Ftest_2b$`Pr(>F)`
+
+par(mfrow= c(2,2))
+plot(Fit_2b)
+```
+
+```{r}
+boxplot(Loss ~ Trt, weightloss)
+```
+
+### 2C. Unadjusted Pairwise Comparisons
+```{r}
+(loss_2c<- emmeans::emmeans(Fit_2b, pairwise ~ Trt, adjust = "none"))
+```
+
+### 2D. Tukey adjusted Pairwise Comparisons
+```{r}
+(loss_2d<- emmeans::emmeans(Fit_2b, pairwise ~ Trt))
+```
+
+### 2E. Without adjusting for multiple testing compared to Tukey
+**Without adjustment, there were 8 significant comparisons, and with adjustment there were 5 significant comparisons.**
+
+### 2F.   HSD value
+```{r}
+qtukey(0.95, 5, 45) 
+```
+
+### 2G. CLD display
+```{r message = FALSE, warning = FALSE}
+emmeans::CLD(loss_2d$emmeans)
+```
+
+### 2H. (**4pts**) Dunnett adjusted comparisons  
+```{r}
+emmeans::emmeans(Fit_2b, dunnett ~ Trt)
+```
+**Treatments A1, A2, and A4 appear to result in a significantly higher weight loss than the standard at 0.05 level.**
+

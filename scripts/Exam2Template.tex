@@ -1,0 +1,631 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{hyperref}
+\hypersetup{
+            pdftitle={Exam2 Spring 2020},
+            pdfauthor={Natalie Schmer},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+
+\title{Exam2 Spring 2020}
+\author{Natalie Schmer}
+\date{}
+
+\begin{document}
+\maketitle
+
+\#Signature for honor pledge: Natalie Schmer
+
+\hypertarget{multiple-choice}{%
+\subsection{Multiple Choice}\label{multiple-choice}}
+
+(hint: two spaces at end of a line starts new line when knitting to pdf.
+otherwise numbered lines like below do so automatically.)
+
+\hypertarget{truefalse}{%
+\subsubsection{1 - 7 True/False}\label{truefalse}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  T
+\item
+  F
+\item
+  T
+\item
+  T
+\item
+  F
+\item
+  T
+\item
+  F
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nD <-}\StringTok{ }\DecValTok{55}
+\NormalTok{piD <-}\StringTok{ }\FloatTok{0.11}
+
+\DecValTok{3}\OperatorTok{*}\KeywordTok{sqrt}\NormalTok{(piD}\OperatorTok{*}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\NormalTok{piD)}\OperatorTok{/}\NormalTok{nD) }\CommentTok{#0.1265}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.1265701
+\end{verbatim}
+
+\hypertarget{abcor-d}{%
+\subsubsection{8-13 A,B,C,or D}\label{abcor-d}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{7}
+\tightlist
+\item
+  B
+\item
+  C
+\item
+  B
+\item
+  B
+\item
+  D
+\item
+  D
+\end{enumerate}
+
+\hypertarget{matching-place-a-unique-letter-next-to-each}{%
+\subsection{Matching (place a unique letter next to
+each)}\label{matching-place-a-unique-letter-next-to-each}}
+
+Scenario1: B\\
+Scenario2: A\\
+Scenario3: G\\
+Scenario4: F\\
+Scenario5: E\\
+Scenario6: D\\
+Scenario7: C
+
+\newpage
+
+\hypertarget{r-code-questions}{%
+\subsubsection{R Code Questions}\label{r-code-questions}}
+
+\hypertarget{sleep-data}{%
+\subsection{1. Sleep Data}\label{sleep-data}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sleep <-}\StringTok{ }\NormalTok{sleep}
+\KeywordTok{str}\NormalTok{(sleep)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    20 obs. of  3 variables:
+##  $ extra: num  0.7 -1.6 -0.2 -1.2 -0.1 3.4 3.7 0.8 0 2 ...
+##  $ group: Factor w/ 2 levels "1","2": 1 1 1 1 1 1 1 1 1 1 ...
+##  $ ID   : Factor w/ 10 levels "1","2","3","4",..: 1 2 3 4 5 6 7 8 9 10 ...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{?sleep}
+\KeywordTok{summary}\NormalTok{(sleep)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      extra        group        ID   
+##  Min.   :-1.600   1:10   1      :2  
+##  1st Qu.:-0.025   2:10   2      :2  
+##  Median : 0.950          3      :2  
+##  Mean   : 1.540          4      :2  
+##  3rd Qu.: 3.400          5      :2  
+##  Max.   : 5.500          6      :2  
+##                          (Other):8
+\end{verbatim}
+
+\hypertarget{a.-hypotheses}{%
+\subsubsection{1A. Hypotheses}\label{a.-hypotheses}}
+
+\textbf{The parameters are the null and alternative hypotheses. The null
+hypothesis is that there is no difference in how the 2 drugs increase
+sleep compared to the control-- the means of extra sleep in hours for
+each group are not different. The alternative hypothesis is that one of
+the drugs increases sleep more than the other as compared to the
+control-- the mean extra sleep in hours for each group are not equal to
+eachother.}
+
+\hypertarget{b.-boxplot}{%
+\subsubsection{1B. Boxplot}\label{b.-boxplot}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{boxplot}\NormalTok{(extra }\OperatorTok{~}\StringTok{ }\NormalTok{group, }\DataTypeTok{data =}\NormalTok{ sleep, }\DataTypeTok{xlab =} \StringTok{"Group"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"Extra amount of sleep (hours)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[height=150px]{Exam2Template_files/figure-latex/unnamed-chunk-2-1}
+
+\textbf{The boxplot may be misleading because it it showing that the
+means of the groups are different, when they may not be when tested
+statistically. Also, the two groups are both compared to a control, with
+which the sleep in hours is not shown here.}
+
+\hypertarget{c.-t.test-can-be-done-at-least-3-different-ways}{%
+\subsubsection{1C. t.test can be done at least 3 different
+ways}\label{c.-t.test-can-be-done-at-least-3-different-ways}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{t.test}\NormalTok{(extra }\OperatorTok{~}\StringTok{ }\NormalTok{group, }\DataTypeTok{data =}\NormalTok{ sleep, }\DataTypeTok{paired =}\NormalTok{ T)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Paired t-test
+## 
+## data:  extra by group
+## t = -4.0621, df = 9, p-value = 0.002833
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -2.4598858 -0.7001142
+## sample estimates:
+## mean of the differences 
+##                   -1.58
+\end{verbatim}
+
+\hypertarget{d.-conclusion}{%
+\subsubsection{1D. Conclusion}\label{d.-conclusion}}
+
+\textbf{Since p \textless{} 0.05, we reject the null hypothesis and
+conculde that the mean increased sleep is not the same between the 2
+groups. Based on the boxplot, it appears that the drug given to the
+second group increased sleep more than the drug in the first group.}
+
+\hypertarget{proportion-of-lefties-then-and-now}{%
+\subsection{2. Proportion of lefties then and
+now}\label{proportion-of-lefties-then-and-now}}
+
+\hypertarget{a.-hypotheses-1}{%
+\subsubsection{2A. Hypotheses}\label{a.-hypotheses-1}}
+
+\textbf{This is a proportion, so the parameters of interest include:
+number of trials, n = 150, and Y, number of successes = 18, with the
+main parameter being pi hat, the proportion of successes, in this case
+being 18/ 150 or 0.12. The null hypothesis is that the proprotion of
+Americans who are left handed has stayed the same since the 1980's, and
+the alternative is that the proprtion of left handed Americans has
+increased since the 1980's.}
+
+\hypertarget{b.-test-statistic-multiple-ways}{%
+\subsubsection{2B. Test Statistic (multiple
+ways)}\label{b.-test-statistic-multiple-ways}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#z- score for alpha = 0.05}
+\KeywordTok{qnorm}\NormalTok{(}\FloatTok{0.95}\NormalTok{) }\CommentTok{#1.645}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.644854
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#test stat: }
+\NormalTok{(}\FloatTok{0.12} \OperatorTok{-}\StringTok{ }\FloatTok{0.08}\NormalTok{)}\OperatorTok{/}\NormalTok{(}\KeywordTok{sqrt}\NormalTok{((}\FloatTok{0.08}\OperatorTok{*}\NormalTok{(}\DecValTok{1}\FloatTok{-0.08}\NormalTok{))}\OperatorTok{/}\DecValTok{150}\NormalTok{)) }\CommentTok{#1.81}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.805788
+\end{verbatim}
+
+\hypertarget{c.-p-value-multiple-ways}{%
+\subsubsection{2C. p-value (multiple
+ways)}\label{c.-p-value-multiple-ways}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{prop.test}\NormalTok{(}\DecValTok{18}\NormalTok{, }\DecValTok{150}\NormalTok{, }\DataTypeTok{p =} \FloatTok{0.05}\NormalTok{, }\DataTypeTok{correct =}\NormalTok{ T) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  1-sample proportions test with continuity correction
+## 
+## data:  18 out of 150, null probability 0.05
+## X-squared = 14.035, df = 1, p-value = 0.0001794
+## alternative hypothesis: true p is not equal to 0.05
+## 95 percent confidence interval:
+##  0.0746155 0.1855432
+## sample estimates:
+##    p 
+## 0.12
+\end{verbatim}
+
+\hypertarget{d.}{%
+\subsubsection{2D.}\label{d.}}
+
+\textbf{From part b, z=1.81 \textgreater{} z(alpha/2)= 1.96, so part b
+would say to reject the null hypothesis that the proprotion of americans
+who are left handed has stayed the same since the 1980's. From the
+prop.test in part c, the pvalue is \textless{} 0.05, which is also
+sufficient evidence that the proportion of left handed americans is
+higher at the time of the study than in the 1980's.}
+
+\hypertarget{cuckoos}{%
+\subsection{3 Cuckoos}\label{cuckoos}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{\{ }
+  \KeywordTok{library}\NormalTok{(tidyverse)}
+  \KeywordTok{library}\NormalTok{(car)}
+  \KeywordTok{library}\NormalTok{(emmeans)}
+\NormalTok{\}}
+
+\NormalTok{eggs.wide <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{'/Users/natalieschmer/Desktop/GitHub/stats_511/data/cuckoo.csv'}\NormalTok{)}
+
+\KeywordTok{str}\NormalTok{(eggs.wide)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    45 obs. of  6 variables:
+##  $ meadow : num  19.6 20.1 20.6 20.9 21.6 ...
+##  $ tree   : num  21.1 21.9 22.1 22.4 22.6 ...
+##  $ hedge  : num  20.9 21.6 22.1 22.9 23.1 ...
+##  $ robin  : num  21.1 21.9 22.1 22.1 22.1 ...
+##  $ wagtail: num  21.1 21.9 21.9 21.9 22.1 ...
+##  $ wren   : num  19.9 20.1 20.2 20.9 20.9 ...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{eggs <-}\StringTok{ }\KeywordTok{gather}\NormalTok{(eggs.wide,}\StringTok{"HostSpecies"}\NormalTok{,}\StringTok{"eggsize"}\NormalTok{,}\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{) }\CommentTok{#missing values stacked}
+\KeywordTok{str}\NormalTok{(eggs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    120 obs. of  2 variables:
+##  $ HostSpecies: chr  "meadow" "meadow" "meadow" "meadow" ...
+##  $ eggsize    : num  19.6 20.1 20.6 20.9 21.6 ...
+\end{verbatim}
+
+\hypertarget{a.-boxplot}{%
+\subsubsection{3A. boxplot}\label{a.-boxplot}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{boxplot}\NormalTok{(eggsize }\OperatorTok{~}\StringTok{ }\NormalTok{HostSpecies, }\DataTypeTok{data =}\NormalTok{ eggs)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[height=150px]{Exam2Template_files/figure-latex/unnamed-chunk-6-1}
+
+\hypertarget{b.-sumstats}{%
+\subsubsection{3B. Sumstats}\label{b.-sumstats}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{eggs }\OperatorTok{%>%}\StringTok{ }
+\StringTok{            }\KeywordTok{group_by}\NormalTok{(HostSpecies) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{            }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{n =} \KeywordTok{n}\NormalTok{(),}
+                      \DataTypeTok{mean =} \KeywordTok{mean}\NormalTok{(eggsize),}
+                      \DataTypeTok{sd =} \KeywordTok{sd}\NormalTok{(eggsize),}
+                      \DataTypeTok{se =}\NormalTok{ sd}\OperatorTok{/}\KeywordTok{sqrt}\NormalTok{(n))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 5
+##   HostSpecies     n  mean    sd    se
+##   <chr>       <int> <dbl> <dbl> <dbl>
+## 1 hedge          14  23.1 1.07  0.286
+## 2 meadow         45  22.3 0.921 0.137
+## 3 robin          16  22.6 0.685 0.171
+## 4 tree           15  23.1 0.901 0.233
+## 5 wagtail        15  22.9 1.07  0.276
+## 6 wren           15  21.1 0.744 0.192
+\end{verbatim}
+
+\hypertarget{c.-diagnoatics}{%
+\subsubsection{3C. Diagnoatics}\label{c.-diagnoatics}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Fit_eggs =}\StringTok{ }\KeywordTok{lm}\NormalTok{(eggsize }\OperatorTok{~}\StringTok{ }\NormalTok{HostSpecies, }\DataTypeTok{data =}\NormalTok{ eggs)}
+
+\CommentTok{#Set up plot space and plot}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(Fit_eggs)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[height=150px]{Exam2Template_files/figure-latex/unnamed-chunk-8-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Levene's test}
+\NormalTok{car}\OperatorTok{::}\KeywordTok{leveneTest}\NormalTok{(eggsize }\OperatorTok{~}\StringTok{ }\NormalTok{HostSpecies, }\DataTypeTok{data =}\NormalTok{ eggs, )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in leveneTest.default(y = y, group = group, ...): group coerced to
+## factor.
+\end{verbatim}
+
+\begin{verbatim}
+## Levene's Test for Homogeneity of Variance (center = median)
+##        Df F value Pr(>F)
+## group   5  0.6397 0.6698
+##       114
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Shapiro - Wilk}
+\NormalTok{(}\KeywordTok{shapiro.test}\NormalTok{(eggs}\OperatorTok{$}\NormalTok{eggsize))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  eggs$eggsize
+## W = 0.98241, p-value = 0.1193
+\end{verbatim}
+
+\textbf{This data appears to be ok for an anova. Residuals are generally
+very close to 0, except for the last two groups, and the QQ plot has a
+line that is very close to straight but slightly deviates at the bottom
+left. Additionally, the Levene p value is \textgreater{} 0.05 so would
+not be non-normal, and the shapiro-wilk p value= 0.12, also not
+non-normal. If anything, the differences in sample size where meadow has
+many more observations could be a problem, but the summary stats are
+very similar to the other groups.}
+
+\hypertarget{d.-anova-table}{%
+\subsubsection{3D. ANOVA table}\label{d.-anova-table}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{anova}\NormalTok{(Fit_eggs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Variance Table
+## 
+## Response: eggsize
+##              Df Sum Sq Mean Sq F value    Pr(>F)    
+## HostSpecies   5 42.940  8.5879  10.388 3.152e-08 ***
+## Residuals   114 94.248  0.8267                      
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\hypertarget{e.}{%
+\subsubsection{3E.}\label{e.}}
+
+\textbf{Since F \textless{} 0.05, at least one population group mean
+appears to be different.}
+
+\hypertarget{f.-cld}{%
+\subsubsection{3F. CLD}\label{f.-cld}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(eggs_cld<-}\StringTok{ }\NormalTok{emmeans}\OperatorTok{::}\KeywordTok{emmeans}\NormalTok{(Fit_eggs, pairwise }\OperatorTok{~}\StringTok{ }\NormalTok{HostSpecies))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $emmeans
+##  HostSpecies emmean    SE  df lower.CL upper.CL
+##  hedge         23.1 0.243 114     22.6     23.6
+##  meadow        22.3 0.136 114     22.0     22.6
+##  robin         22.6 0.227 114     22.1     23.0
+##  tree          23.1 0.235 114     22.6     23.6
+##  wagtail       22.9 0.235 114     22.4     23.4
+##  wren          21.1 0.235 114     20.7     21.6
+## 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast         estimate    SE  df t.ratio p.value
+##  hedge - meadow     0.8225 0.278 114  2.956  0.0429 
+##  hedge - robin      0.5464 0.333 114  1.642  0.5726 
+##  hedge - tree       0.0314 0.338 114  0.093  1.0000 
+##  hedge - wagtail    0.2181 0.338 114  0.645  0.9872 
+##  hedge - wren       1.9914 0.338 114  5.894  <.0001 
+##  meadow - robin    -0.2761 0.265 114 -1.043  0.9022 
+##  meadow - tree     -0.7911 0.271 114 -2.918  0.0475 
+##  meadow - wagtail  -0.6044 0.271 114 -2.230  0.2325 
+##  meadow - wren      1.1689 0.271 114  4.312  0.0005 
+##  robin - tree      -0.5150 0.327 114 -1.576  0.6160 
+##  robin - wagtail   -0.3283 0.327 114 -1.005  0.9155 
+##  robin - wren       1.4450 0.327 114  4.422  0.0003 
+##  tree - wagtail     0.1867 0.332 114  0.562  0.9932 
+##  tree - wren        1.9600 0.332 114  5.903  <.0001 
+##  wagtail - wren     1.7733 0.332 114  5.341  <.0001 
+## 
+## P value adjustment: tukey method for comparing a family of 6 estimates
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CLD}\NormalTok{(eggs_cld)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  HostSpecies emmean    SE  df lower.CL upper.CL .group
+##  wren          21.1 0.235 114     20.7     21.6  1    
+##  meadow        22.3 0.136 114     22.0     22.6   2   
+##  robin         22.6 0.227 114     22.1     23.0   23  
+##  wagtail       22.9 0.235 114     22.4     23.4   23  
+##  tree          23.1 0.235 114     22.6     23.6    3  
+##  hedge         23.1 0.243 114     22.6     23.6    3  
+## 
+## Confidence level used: 0.95 
+## P value adjustment: tukey method for comparing a family of 6 estimates 
+## significance level used: alpha = 0.05
+\end{verbatim}
+
+\textbf{Based on the above, it apears that the wren host group tends to
+have smaller egg sizes than the others.}
+
+\hypertarget{g-contrasts}{%
+\subsubsection{3G Contrasts}\label{g-contrasts}}
+
+\hypertarget{g-part-i.}{%
+\subsubsection{3G part i.}\label{g-part-i.}}
+
+\textbf{The null hypothesis would be that there is not a significant
+difference in the mean sizes of wren and meadowlark eggs together as
+compared to robins and wagtails together.}
+
+\hypertarget{g-part-ii.}{%
+\subsubsection{3G part ii.}\label{g-part-ii.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{eggs_g_model <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(eggsize }\OperatorTok{~}\StringTok{ }\NormalTok{HostSpecies, }\DataTypeTok{data =}\NormalTok{ eggs)}
+
+\NormalTok{eggs_emmeans <-}\StringTok{ }\KeywordTok{emmeans}\NormalTok{(eggs_g_model, }\StringTok{"HostSpecies"}\NormalTok{)}
+
+\CommentTok{#find order of factors}
+\KeywordTok{levels}\NormalTok{(}\KeywordTok{factor}\NormalTok{(eggs}\OperatorTok{$}\NormalTok{HostSpecies))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "hedge"   "meadow"  "robin"   "tree"    "wagtail" "wren"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#don't want hedge or tree, positions 1 or 4}
+
+\KeywordTok{contrast}\NormalTok{(eggs_emmeans, }\KeywordTok{list}\NormalTok{(}\DataTypeTok{partg =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{-0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{-0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  contrast estimate    SE  df t.ratio p.value
+##  partg       -1.02 0.212 114 -4.827  <.0001
+\end{verbatim}
+
+\end{document}

@@ -1,0 +1,186 @@
+---
+title: "Exam2 Spring 2020"
+author: "Natalie Schmer"
+output:
+  word_document: default
+editor_options:
+  chunk_output_type: console
+---
+
+Signature for honor pledge: Natalie Schmer 
+
+## Multiple Choice  
+(hint: two spaces at end of a line starts new line when knitting to pdf. otherwise numbered lines like below do so automatically.)
+
+### 1 - 7 True/False
+1. T
+2. F
+3. T
+4. T
+5. F
+6. T
+7. F
+```{r}
+n7 <- 55
+pi7 <- 0.11
+
+3*sqrt(pi7*(1-pi7)/n7)
+```
+
+### 8-13 A,B,C,or D
+8. B
+9. C
+10. B
+11. B 
+12. D
+13. D 
+
+## Matching (place a unique letter next to each)
+
+Scenario1: B      
+Scenario2: A      
+Scenario3: G  
+Scenario4: F    
+Scenario5: E  
+Scenario6: D  
+Scenario7: C  
+
+\newpage
+
+### R Code Questions
+
+## 1. Sleep Data
+```{r Setup 1}
+sleep <- sleep
+str(sleep)
+?sleep
+summary(sleep)
+```
+
+### 1A. Hypotheses
+**The parameters are the null and alternative hypotheses. The null hypothesis is that there is no difference in how the 2 drugs increase sleep compared to the control-- the means of extra sleep in hours for each group are not different. The alternative hypothesis is that one of the drugs increases sleep more than the other as compared to the control-- the mean extra sleep in hours for each group are not equal to eachother.**
+
+### 1B. Boxplot
+```{r, out.height= "150px"}
+boxplot(extra ~ group, data = sleep, xlab = "Group", ylab = "Extra amount of sleep (hours)")
+```
+
+**The boxplot may be misleading because it it showing that the means of the groups are different, when they may not be when tested statistically. Also, the two groups are both compared to a control, with which the sleep in hours is not shown here.**
+
+### 1C. t.test can be done at least 3 different ways
+```{r, message=FALSE}
+t.test(extra ~ group, data = sleep, paired = T)
+```
+
+### 1D. Conclusion
+**Since p < 0.05, we reject the null hypothesis and conculde that the mean increased sleep is not the same between the 2 groups. Based on the boxplot, it appears that the drug given to the second group increased sleep more than the drug in the first group.**
+
+## 2. Proportion of lefties then and now
+
+### 2A. Hypotheses
+**This is a proportion, so the parameters of interest include: number of trials, n = 150, and Y, number of successes = 18, with the main parameter being pi hat, the proportion of successes, in this case being 18/ 150 or 0.12. The null hypothesis is that the proprotion of Americans who are left handed has stayed the same since the 1980's, and the alternative is that the proprtion of left handed Americans has increased since the 1980's.**
+
+
+### 2B. Test Statistic (multiple ways)
+```{r}
+#z- score for alpha = 0.05
+qnorm(0.95) #1.645
+
+#test stat: 
+(0.12 - 0.08)/(sqrt((0.08*(1-0.08))/150)) #1.81
+```
+
+### 2C. p-value (multiple ways)
+```{r}
+prop.test(18, 150, p = 0.05, correct = T) 
+```
+
+### 2D. 
+**From part b, z=1.81 > z(alpha/2)= 1.96, so part b would say to reject the null hypothesis that the proprotion of americans who are left handed has stayed the same since the 1980's. From the prop.test in part c, the pvalue is < 0.05, which is also sufficient evidence that the proportion of left handed americans is higher at the time of the study than in the 1980's.**
+
+## 3 Cuckoos
+
+```{r setup 3, message=FALSE}
+
+{ 
+  library(tidyverse)
+  library(car)
+  library(emmeans)
+}
+
+eggs.wide <- read.csv('/Users/natalieschmer/Desktop/GitHub/stats_511/data/cuckoo.csv')
+
+str(eggs.wide)
+
+eggs <- gather(eggs.wide,"HostSpecies","eggsize",na.rm=TRUE) #missing values stacked
+str(eggs)
+```
+
+### 3A. boxplot
+```{r, out.height="150px"}
+boxplot(eggsize ~ HostSpecies, data = eggs)
+```
+
+### 3B. Sumstats
+```{r}
+eggs %>% 
+            group_by(HostSpecies) %>% 
+            summarise(n = n(),
+                      mean = mean(eggsize),
+                      sd = sd(eggsize),
+                      se = sd/sqrt(n))
+```
+
+### 3C. Diagnoatics 
+```{r, out.height="150px"}
+Fit_eggs = lm(eggsize ~ HostSpecies, data = eggs)
+
+#Set up plot space and plot
+par(mfrow= c(2, 2))
+plot(Fit_eggs)
+
+#Levene's test
+car::leveneTest(eggsize ~ HostSpecies, data = eggs, )
+
+#Shapiro - Wilk
+(shapiro.test(eggs$eggsize))
+```
+
+**This data appears to be ok for an anova. Residuals are generally very close to 0, except for the last two groups, and the QQ plot has a line that is very close to straight but slightly deviates at the bottom left. Additionally, the Levene p value is > 0.05 so would not be non-normal, and the shapiro-wilk p value= 0.12, also not non-normal. If anything, the differences in sample size where meadow has many more observations could be a problem, but the summary stats are very similar to the other groups.**
+
+### 3D. ANOVA table
+```{r}
+anova(Fit_eggs)
+```
+
+### 3E.  
+**Since F < 0.05, at least one population group mean appears to be different.**
+
+### 3F. CLD
+```{r, warning = FALSE, message=FALSE}
+(eggs_cld<- emmeans::emmeans(Fit_eggs, pairwise ~ HostSpecies))
+
+CLD(eggs_cld)
+```
+
+**Based on the above, it apears that the wren host group tends to have smaller egg sizes than the others.**
+
+### 3G Contrasts
+
+### 3G part i.
+**The null hypothesis would be that there is not a significant difference in the mean sizes of wren and meadowlark eggs together as compared to robins and wagtails together.**
+
+### 3G part ii.
+
+```{r}
+eggs_g_model <- lm(eggsize ~ HostSpecies, data = eggs)
+
+eggs_emmeans <- emmeans(eggs_g_model, "HostSpecies")
+
+#find order of factors
+levels(factor(eggs$HostSpecies))
+#don't want hedge or tree, positions 1 or 4
+
+contrast(eggs_emmeans, list(partg = c(0, 0.5, -0.5, 0, -0.5, 0.5)))
+```
+
